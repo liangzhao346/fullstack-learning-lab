@@ -1,0 +1,13 @@
+{
+ "name":"fullstack-learning-lab","version":"1.0.0","private":true,
+ "scripts":{
+  "dev":"node scripts/dev.mjs",
+  "dev:server":"cd server && ./mvnw spring-boot:run",
+  "dev:client":"npm --prefix client run dev",
+  "build":"cd server && ./mvnw verify && cd .. && npm --prefix client run build",
+  "test":"cd server && ./mvnw test",
+  "setup":"npm --prefix client ci",
+  "infra:up":"docker compose up -d --wait",
+  "infra:down":"docker compose down"
+ }
+}

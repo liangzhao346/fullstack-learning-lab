@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+LAB_SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+LAB_MAVEN_EXEC=$(python3 "$LAB_SCRIPT_DIR/../scripts/maven_bootstrap.py")
+exec "$LAB_MAVEN_EXEC" "$@"

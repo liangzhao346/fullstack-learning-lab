@@ -1,0 +1,7 @@
+node_modules/
+dist/
+target/
+.runtime/
+.env
+*.log
+.DS_Store

@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: ${LAB_DB_URL:jdbc:mysql://127.0.0.1:3307/learning_lab?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${LAB_DB_USER:lab}
+    password: ${LAB_DB_PASSWORD:learning-only}
+app:
+  cache: redis

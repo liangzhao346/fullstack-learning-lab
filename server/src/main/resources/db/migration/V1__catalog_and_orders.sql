@@ -1,0 +1,22 @@
+CREATE TABLE products (
+ id BIGINT AUTO_INCREMENT PRIMARY KEY,
+ sku VARCHAR(40) NOT NULL UNIQUE,
+ name VARCHAR(120) NOT NULL,
+ price DECIMAL(10,2) NOT NULL,
+ stock INT NOT NULL,
+ version INT NOT NULL DEFAULT 0,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT positive_stock CHECK (stock >= 0),
+ CONSTRAINT positive_price CHECK (price > 0)
+);
+CREATE TABLE purchase_orders (
+ id VARCHAR(36) PRIMARY KEY,
+ request_key VARCHAR(80) NOT NULL UNIQUE,
+ product_id BIGINT NOT NULL,
+ quantity INT NOT NULL,
+ unit_price DECIMAL(10,2) NOT NULL,
+ total DECIMAL(12,2) NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT order_product FOREIGN KEY (product_id) REFERENCES products(id),
+ CONSTRAINT positive_quantity CHECK (quantity > 0)
+);

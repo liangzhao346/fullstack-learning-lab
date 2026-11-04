@@ -1,0 +1,25 @@
+server:
+  address: ${LAB_BIND_ADDRESS:127.0.0.1}
+  port: ${LAB_API_PORT:8087}
+spring:
+  application:
+    name: fullstack-learning-lab
+  profiles:
+    default: demo
+  datasource:
+    url: ${LAB_DB_URL:jdbc:h2:file:./.runtime/learning;MODE=MySQL;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${LAB_DB_USER:sa}
+    password: ${LAB_DB_PASSWORD:}
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: ${LAB_REDIS_HOST:127.0.0.1}
+      port: ${LAB_REDIS_PORT:6387}
+      connect-timeout: 400ms
+      timeout: 400ms
+app:
+  cache: local
+  seed: true
+  labs-enabled: true
+  cache-prefix: learning-lab:v1
