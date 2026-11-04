@@ -4,7 +4,7 @@
 
 ## 先运行，再沿链路阅读
 
-要求：Java 17+、Node 20.19+（或 22.12+）、Python 3。当前构建使用 Spring Boot 3.5.16、Vue 3.5.44、Vite 8.3.5。第一次运行需要网络下载依赖；Maven 启动脚本自动下载并校验固定版本到用户缓存，不修改系统 Java。
+要求：Java 17+、Node 20.19+（或 22.12+）、Python 3。当前构建使用 Spring Boot 3.5.16、Vue 3.5.44、TypeScript 5.9.3、Vite 8.3.5。第一次运行需要网络下载依赖；Maven 启动脚本自动下载并校验固定版本到用户缓存，不修改系统 Java。
 
 ```bash
 cd fullstack-learning-lab
@@ -51,20 +51,26 @@ API 端口用 `LAB_API_PORT` 调整；同时给前端设置匹配的 `LAB_API_UR
 - [学习路线](docs/learning-path.md)：从页面请求读到 SQL 和缓存，包含练习与预期结果。
 - [技术架构图](docs/architecture.md)：技术模块总图与清单、业务组件调用、数据库与缓存、数据表关系及环境配置。
 - [使用链路与模块学习说明](docs/learning/project-architecture-and-usage.md)：页面如何操作、对应哪些接口、商品详情和订单的完整时序。
+- [前端 TypeScript 与组件分层](docs/learning/frontend-typescript-components.md)：页面、组件、状态、接口和类型的职责，以及一条完整的前端调用链。
 - [缓存实验手册](docs/cache-labs.md)：触发方式、指标、修复方案和局限。
 - [API 说明](docs/api.md)：请求体、响应与错误状态。
 - [资料来源](docs/sources.md)：实际查阅的官方指南和开源示例，说明借鉴范围。
 - [验证结果](docs/verification.md)：自动化测试、HTTP 与界面验证，区分本地和真实服务。
 - [架构与使用图整理记录](docs/tasks/2026-11-04-architecture-usage-diagrams.md)：本次源码核对、产物与验证边界。
+- [前端 TS 重构记录](docs/tasks/2026-11-04-frontend-typescript-refactor.md)：组件拆分、类型检查和交互回归范围。
 
 ## 常用命令
 
 ```bash
 npm test                    # Java 集成与并发测试，独立 H2 内存库
-npm run build               # 后端 verify + 前端构建
+npm run typecheck           # Vue 模板 / TS 业务代码 / Vite 配置的严格类型检查
+npm run build               # 后端 verify + 前端类型检查及构建
+npm --prefix client run build # 只检查并构建前端
 npm run dev:server          # 只启动后端
 npm run dev:client          # 只启动前端
 ```
+
+前端从 `client/src/main.ts` 启动，`App.vue` 只装配布局和页面。`views/` 组合业务组件，`components/` 负责界面与交互事件，`composables/` 管理状态与操作，`api/` 封装有类型的 HTTP 接口，`types/` 定义后端 DTO 和组件共用契约。
 
 前端依赖锁在 `client/package-lock.json`；Java 依赖由固定 Spring Boot BOM 管理。首次 Maven 下载使用官方来源和固定 SHA-512；下载程序默认直连官方仓库，若环境必须使用代理，可设置 `LAB_DOWNLOAD_USE_PROXY=1` 使用已有代理配置。个人代理曾造成下载截断，校验会拒绝损坏包，不跳过校验。
 # fullstack-learning-lab

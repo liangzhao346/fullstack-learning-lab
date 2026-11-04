@@ -6,6 +6,7 @@
   "dev:client":"npm --prefix client run dev",
   "build":"cd server && ./mvnw verify && cd .. && npm --prefix client run build",
   "test":"cd server && ./mvnw test",
+  "typecheck":"npm --prefix client run typecheck",
   "setup":"npm --prefix client ci",
   "infra:up":"docker compose up -d --wait",
   "infra:down":"docker compose down"

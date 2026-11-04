@@ -18,7 +18,7 @@
 
 如果服务尚未运行，在项目根目录执行 `npm run dev`；首次缺少前端依赖时先按 [README](../../README.md) 执行 `npm run setup`。打开默认前端地址 [127.0.0.1:5178](http://127.0.0.1:5178)，后端默认 8087。这里给出操作方法，本轮未执行启动。
 
-右上角通过 `/api/system` 显示配置类型；默认显示 `h2-demo / local-demo`。页面在同一个 `App.vue` 内切换四个标签，没有前端 Router。切换标签本身只改变显示内容，数据由初始化、刷新、搜索和提交等操作读取。
+右上角通过 `/api/system` 显示配置类型；默认显示 `h2-demo / local-demo`。`App.vue` 装配四个独立 View，`KeepAlive` 保留表单和页面状态，仍按标签切换。数据由工作区初始化、刷新与领域 composable 操作读取，组件和类型边界见[前端分层说明](frontend-typescript-components.md)。
 
 ## 推荐使用顺序
 
@@ -49,7 +49,7 @@ flowchart TB
 
 ## 页面动作与接口对应
 
-所有地址都由前端 `api()` 加上 `/api`，开发时经过 Vite 代理到 Spring Boot。没有把数据库地址交给浏览器。
+所有地址都由 `api/client.ts` 加上 `/api`，具体接口定义在 `api/lab.ts`，开发时经过 Vite 代理到 Spring Boot。页面事件经领域 composable 调用接口，数据库地址留在后端配置。
 
 | 页面动作         | 实际请求                                              | 后端与存储                                    | 页面观察点                     |
 | ------------ | ------------------------------------------------- | ---------------------------------------- | ------------------------- |
@@ -75,7 +75,7 @@ flowchart TB
 ```mermaid
 sequenceDiagram
     actor U as 用户
-    participant V as App.vue
+    participant V as 商品组件 / useProducts / API 客户端
     participant P as Vite 代理
     participant C as ApiController
     participant S as ProductService / CacheReader
@@ -112,7 +112,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor U as 用户
-    participant V as App.vue
+    participant V as 订单组件 / useOrders / API 客户端
     participant C as ApiController
     participant S as OrderService
     participant T as OrderTransaction 事务代理
@@ -179,6 +179,6 @@ sequenceDiagram
 4. 同标识改数量应冲突；生成新标识再下单也会因库存不足冲突。已有订单的商品删除应被外键阻止。
 5. 运行一组缓存实验，说明保护方案改变的是哪条链路、哪些实际计数，以及没有解决什么。
 
-本次实际完成的是源码交叉核对、Markdown 链接和图表结构检查，没有启动应用、执行练习或重跑业务测试。图表使用 Mermaid 源码，未运行独立渲染器。历史测试结论见[验证记录](../verification.md)，不能视作本轮重测。真实 MySQL/Redis 尚未实测，单进程合并回源也不能推导出多实例下相同的保障。
+最初图表整理完成了源码、链接和图表结构检查，未运行独立 Mermaid 渲染器。后续前端 TS 重构的类型、构建和交互回归单独见[验证记录](../verification.md)；各轮结论按实际验证范围区分。真实 MySQL/Redis 尚未实测，单进程合并回源也不能推导出多实例下相同的保障。
 
 能够沿「页面事件 → api → Controller → Service / 事务 → Repository / CacheStore → 响应 → 页面」解释一条正常和一条异常请求，即完成本模块的学习目标。

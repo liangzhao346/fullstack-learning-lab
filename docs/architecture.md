@@ -8,11 +8,12 @@
 
 ```mermaid
 flowchart TB
-    subgraph FrontModules["前端模块：Vue 3.5.44 / JavaScript"]
-        UI["界面与状态<br/>Composition API：ref / computed<br/>原生 CSS / 表单 / 列表"]
-        Client["请求与观察<br/>Fetch API / HTTP / JSON<br/>状态码 / requestId / 请求观察窗"]
-        DevProxy["开发服务<br/>Vite 8.3.5 / Vue 插件<br/>5178 与 /api 代理"]
-        UI --> Client --> DevProxy
+    subgraph FrontModules["前端模块：Vue 3.5.44 / TypeScript 5.9.3"]
+        UI["页面与组件<br/>views / components<br/>有类型的 props / emits / 原生 CSS"]
+        State["状态与业务操作<br/>composables / Composition API<br/>Provide / Inject / KeepAlive"]
+        Client["接口契约与请求<br/>types / api<br/>Fetch / HTTP / JSON / 请求观察"]
+        DevProxy["开发服务<br/>Vite 8.3.5 / vite.config.ts<br/>5178 与 /api 代理"]
+        UI --> State --> Client --> DevProxy
     end
     subgraph ServerModules["后端模块：Java 17 / Spring Boot 3.5.16，默认 8087"]
         Boot["应用基础<br/>启动 / 自动配置 / IoC 依赖注入<br/>YAML / Profiles 环境配置"]
@@ -38,7 +39,7 @@ flowchart TB
         Migration --> DB
     end
     subgraph Engineering["工程与验证模块"]
-        Build["启动与构建<br/>Node.js / npm / Vite<br/>Maven / Spring Boot Maven Plugin"]
+        Build["启动与构建<br/>Node.js / npm / vue-tsc / Vite<br/>Maven / Spring Boot Maven Plugin"]
         Test["集成与并发测试<br/>Spring Boot Test / JUnit 5<br/>MockMvc / AssertJ / H2 内存库"]
     end
     DevProxy -->|"HTTP + JSON"| Web
@@ -52,15 +53,16 @@ flowchart TB
 
 数据库中的 version 条件、库存条件和唯一键由 SQL 与数据库约束执行；Spring 事务负责将相关 SQL 一起提交或回滚。这里合并为「事务与一致性」技术模块，具体实现分布在 Service、Repository 和迁移 SQL 中。
 
-默认仍是 H2 + local-demo。MySQL、Redis 和对应 Docker Compose 配置已提供，真实服务尚未实测。工程与验证模块描述已有代码和命令，本次未执行构建或测试。
+默认仍是 H2 + local-demo。MySQL、Redis 和对应 Docker Compose 配置已提供，真实服务尚未实测。前端 TS 重构的本轮检查与交互回归单独记录在[验证记录](verification.md)，与原始后端基线区分。
 
 ## 技术模块清单
 
 | 技术模块 | 当前技术与机制 | 作用 / 代码依据 |
 | --- | --- | --- |
-| 界面与响应式状态 | Vue 3、Composition API、JavaScript、原生 CSS | `ref` 保存表单与列表，`computed` 生成展示数据；[App.vue](../client/src/App.vue)、[style.css](../client/src/style.css) |
-| HTTP 客户端与观察 | 浏览器 Fetch API、JSON、状态码、requestId | `api()` 封装请求并记录响应；[App.vue](../client/src/App.vue) |
-| 前端开发与构建 | Vite、@vitejs/plugin-vue、npm | 编译 Vue、提供开发服务与 `/api` 代理；[前端依赖](../client/package.json)、[Vite 配置](../client/vite.config.js) |
+| 页面与组件 | Vue 3、TypeScript、typed props / emits、KeepAlive、原生 CSS | 入口装配，页面组合业务组件，切换保留表单；[App.vue](../client/src/App.vue)、[ProductsView](../client/src/views/ProductsView.vue)、[ProductEditor](../client/src/components/products/ProductEditor.vue) |
+| 响应式状态与业务操作 | Composition API、ref / computed、typed Provide / Inject、领域 composable | 工作区装配共享依赖，商品 / 订单 / 实验分别管理状态与操作；[工作区](../client/src/composables/useLabWorkspace.ts)、[商品逻辑](../client/src/composables/useProducts.ts) |
+| HTTP 客户端与观察 | TypeScript DTO、泛型请求、Fetch、JSON、状态码、requestId | 具体接口定义与通用传输分离，trace 交给观察窗；[接口](../client/src/api/lab.ts)、[请求客户端](../client/src/api/client.ts)、[领域类型](../client/src/types/domain.ts) |
+| 前端开发与构建 | TypeScript strict、vue-tsc、Vite、@vitejs/plugin-vue、npm | 构建先检查 Vue 模板与 TS，再编译；[前端依赖](../client/package.json)、[Vite 配置](../client/vite.config.ts)、[TS 配置](../client/tsconfig.json) |
 | 应用启动与组件装配 | Java 17、Spring Boot、IoC、构造器注入、自动配置 | 创建并连接 Controller、Service、Repository 和 CacheStore；[LabApplication](../server/src/main/java/dev/learning/lab/LabApplication.java)、[后端依赖](../server/pom.xml) |
 | REST 接口与序列化 | Spring MVC、@RestController、Java record DTO、Jackson | 将 HTTP / JSON 转换为方法调用与 Java 对象，再返回 JSON；[ApiController](../server/src/main/java/dev/learning/lab/ApiController.java)、[Domain](../server/src/main/java/dev/learning/lab/Domain.java) |
 | 参数校验 | Jakarta Bean Validation、@Valid、@Validated | 校验金额、库存、数量、分页和标识；[Domain](../server/src/main/java/dev/learning/lab/Domain.java)、[ApiController](../server/src/main/java/dev/learning/lab/ApiController.java) |
@@ -83,10 +85,12 @@ flowchart TB
 flowchart TB
     User["用户：点击、填表、查看结果"]
     subgraph Frontend["前端：Vue 3 / Vite，默认 5178"]
-        View["App.vue：商品、订单、缓存实验、学习地图"]
-        API["api 函数：fetch + JSON / 请求观察窗"]
+        Entry["App.vue：装配布局与页面"]
+        View["views + components：商品、订单、实验、学习地图"]
+        State["领域 composables：状态与业务操作"]
+        API["api/lab.ts + api/client.ts：类型化接口与 fetch"]
         Proxy["Vite 开发代理：/api"]
-        View --> API --> Proxy
+        Entry --> View --> State --> API --> Proxy
     end
     subgraph Backend["后端：Spring Boot 3.5.16 / Java 17，默认 8087"]
         Controller["ApiController：HTTP 路由 / DTO 校验"]
@@ -121,14 +125,16 @@ flowchart TB
 
 `LabService` 还会直接读取商品样本、预热和清理本次实验自己的缓存命名空间；图中着重展示请求读取主链路。缓存实验故障由局部适配器注入，不会停止 Redis 服务。
 
-`TraceFilter` 为请求生成 `requestId`；`ApiErrors` 将业务、输入和数据库约束异常转成结构化错误。成功返回 `{data, requestId}`，失败返回 `{code, message, requestId, details}`。页面 `api()` 保留状态码与响应，业务函数使用 `data` 更新界面。
+`TraceFilter` 为请求生成 `requestId`；`ApiErrors` 将业务、输入和数据库约束异常转成结构化错误。成功返回 `{data, requestId}`，失败返回 `{code, message, requestId, details}`。前端请求客户端保留状态码与响应，领域 composable 使用类型化 `data` 更新状态，组件展示结果。
 
 ## 各层负责什么
 
 | 层 | 当前技术与文件 | 对前端开发者的理解方式 |
 | --- | --- | --- |
-| 界面与状态 | [App.vue](../client/src/App.vue) | 表单、列表、四个标签、交互事件与请求观察窗 |
-| 开发期转发 | [vite.config.js](../client/vite.config.js) | 浏览器访问前端同源 `/api`，由 Vite 转到后端；生产部署需另配入口 |
+| 入口装配 | [main.ts](../client/src/main.ts)、[App.vue](../client/src/App.vue) | 挂载应用、初始化工作区、装配布局和动态页面 |
+| 页面与组件 | [ProductsView](../client/src/views/ProductsView.vue)、[LabShell](../client/src/components/layout/LabShell.vue) | 页面组合表格和表单；布局承载导航、状态、指标和观察窗 |
+| 前端状态与请求 | [useProducts](../client/src/composables/useProducts.ts)、[api/lab.ts](../client/src/api/lab.ts)、[api/client.ts](../client/src/api/client.ts) | 页面事件触发领域操作，具体接口调用通用请求客户端 |
+| 开发期转发 | [vite.config.ts](../client/vite.config.ts) | 浏览器访问前端同源 `/api`，由 Vite 转到后端；生产部署需另配入口 |
 | 应用启动 | [LabApplication](../server/src/main/java/dev/learning/lab/LabApplication.java) | 启动内嵌 HTTP 服务、装配组件并接入自动配置 |
 | HTTP 接口 | [ApiController](../server/src/main/java/dev/learning/lab/ApiController.java)、[Domain](../server/src/main/java/dev/learning/lab/Domain.java) | 按 URL 找到方法，把 JSON 转为输入对象并校验，再调用业务代码 |
 | 商品业务 | [ProductService](../server/src/main/java/dev/learning/lab/ProductService.java) | 列表直接查 SQL；详情读缓存；编辑用 version；事务提交后失效缓存 |
@@ -187,4 +193,4 @@ Cache-aside 的回填与修改之间仍可能发生竞态；TTL 只限制陈旧�
 
 配置来源为 [application.yml](../server/src/main/resources/application.yml)、[application-mysql-redis.yml](../server/src/main/resources/application-mysql-redis.yml) 和 [compose.yml](../compose.yml)。H2 的 MySQL 兼容模式不能替代真实 MySQL 的锁、隔离级别和方言验证。
 
-本次仅核对源码与图表文档，未启动服务或重测业务。历史结果和未验证范围见[验证记录](verification.md)。
+架构与文档随前端 TS 重构同步更新；组件边界、状态归属与完整前端调用链见[前端模块说明](learning/frontend-typescript-components.md)。各轮实际验证结果和未验证范围见[验证记录](verification.md)。

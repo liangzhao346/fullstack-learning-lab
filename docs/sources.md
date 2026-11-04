@@ -11,3 +11,9 @@
 - [Redis 缓存层故障模式](https://redis.io/blog/cache-layer-architecture-guide/)：参考请求合并、TTL 抖动与缓存故障保护的边界。
 
 H2 与本地缓存是为本机没有 Docker/MySQL/Redis 的环境提供的明确 demo 模式，不是上述真实服务的验证替代。当前单体、无账号系统、有限并发实验的范围由学习目标决定。
+
+2026-11-04 前端 TypeScript 重构另行核对：
+
+- [Vue 的 TypeScript 配置](https://vuejs.org/guide/typescript/overview.html)：使用 vue-tsc 检查 Vue SFC 与模板，独立配置浏览器和 Node 类型环境。
+- [Vue Composition API 的类型](https://vuejs.org/guide/typescript/composition-api.html)：组件 props / emits、ref 和 Provide / Inject 的类型边界。
+- [Vite 的 TypeScript 支持](https://vite.dev/guide/features.html#typescript)：Vite 转译与独立类型检查分别执行，构建脚本先运行检查再打包。

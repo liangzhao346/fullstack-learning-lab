@@ -4,7 +4,7 @@
 
 ## 1. 页面与 HTTP
 
-启动项目，在商品页点击「读缓存」。在请求观察窗与浏览器 Network 中找到 GET 地址、200 状态、data、requestId。再手动访问一个不存在的正整数 ID，观察 404。阅读 `client/src/App.vue` 的 api 函数以及 `ApiController`。
+启动项目，在商品页点击「读缓存」。在请求观察窗与浏览器 Network 中找到 GET 地址、200 状态、data、requestId。再手动访问一个不存在的正整数 ID，观察 404。依次阅读 `client/src/views/ProductsView.vue`、`composables/useProducts.ts`、`api/lab.ts`、`api/client.ts` 和后端 `ApiController`。前端文件都在 `client/src/` 下，组件职责见[前端分层说明](learning/frontend-typescript-components.md)。
 
 练习：说清楚页面没有直接查询数据库，而是在向哪个接口发送什么请求。把非法价格发送给接口，确认后端仍会拒绝。
 

@@ -17,6 +17,19 @@
 
 2026-11-04 按用户要求清理了独立临时项目、bootstrap 验证副本、截图及原始运行报告，以上最终结论保留。独立复查发现的重点路线、历史端口和应用名问题均已修正：新副本学习顺序符合所选重点，历史基线端口不被生成器改写，实际 `/api/system` 返回生成后的应用名。当前项目源码、构建交付和运行数据库保留；临时 H2 内存测试未写入用户其他项目数据库。
 
+## 2026-11-04 前端 TypeScript 与组件重构
+
+本段为该次重构的实际验证，与上述原始开发基线分开记录。
+
+- `npm --prefix client run build` 通过：先以 vue-tsc 检查 Vue SFC / 模板与严格 TS，再以 tsc 检查 Vite 的 Node 配置，最后完成 Vite 生产打包。
+- 根目录 `npm run typecheck` 通过；新增依赖的精确版本及完整解析结果写入 `client/package-lock.json`。
+- 使用本机 Chrome 与 Playwright，真实访问 Vite 5179 → Spring Boot 8088；后端使用已有可执行 jar，覆盖配置指向独立 H2 内存库 `frontend_refactor` 与独立缓存前缀，没有写入默认文件数据库。
+- 19 项浏览器回归通过：初始数据 / 环境、分页、表单跨标签保留与学习地图、创建 / 搜索、详情缓存命中、编辑与旧版本冲突、商品带入订单与表单保留、下单幂等重放、幂等内容冲突 / 库存不足、已有订单商品删除保护、HTML 约束与真实后端 400、无订单商品删除、四种缓存实验、实验结果保留、HTTP 非 JSON / 模拟断网、桌面及移动布局。
+- 验证了相同 requestKey 重放返回相同订单 ID、不同 requestId，库存只扣一次；错误响应仍显示业务 code、字段详情与 requestId。
+- 页面运行时异常捕获为 0；桌面 1440px 与移动 390px 截图已目视核对，390px 页面没有整体横向溢出，商品表格在自己的容器内滚动。
+
+本机证据位于忽略目录 `.runtime/proof/frontend-typescript-refactor.json` 和桌面 / 移动截图；回归脚本位于 `.runtime/frontend-check/regression.mjs`。本轮临时 5179 / 8088 服务已关闭。本轮没有修改后端源码，也没有重跑 Java 测试或真实 MySQL/Redis；仅报告当前前端类型 / 构建与上述浏览器链路的结果。
+
 ## 未验证和实现边界
 
 - 本机没有 Docker/MySQL/Redis 命令，因此真实 MySQL/Redis compose 模式未启动；相关连接配置和适配代码已提供，不能把 H2 或本地缓存测试算作真实服务测试。
