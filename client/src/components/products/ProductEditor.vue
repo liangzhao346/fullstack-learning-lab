@@ -1,19 +1,24 @@
 <script setup lang="ts">
+/** 商品表单。管理本地草稿，向页面提交保存数据或重置请求。 */
 import { ref, watch } from 'vue';
 import type { ProductInput } from '../../types/domain';
 import PanelHeading from '../common/PanelHeading.vue';
 
 const props = defineProps<{
+  /** 页面选中商品或重置时传入一份新的表单初值。 */
   initialValue: ProductInput;
+  /** null 表示新建，商品 ID 表示编辑。 */
   selectedId: number | null;
   busy: boolean;
 }>();
 const emit = defineEmits<{ save: [input: ProductInput]; reset: [] }>();
+// 复制初值，让用户编辑自己的草稿。收到新的 initialValue 时用它替换草稿。
 const draft = ref<ProductInput>({ ...props.initialValue });
 
 watch(() => props.initialValue, (value) => { draft.value = { ...value }; });
 
 function submit() {
+  // 提交 DTO 保留打开表单时的 version，由后端据此检测并发修改。
   emit('save', { ...draft.value, price: Number(draft.value.price), stock: Number(draft.value.stock) });
 }
 </script>

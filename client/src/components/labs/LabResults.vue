@@ -1,10 +1,12 @@
 <script setup lang="ts">
+/** 缓存实验结果。按策略显示统计卡片，并在有预热数据时展示保护方案的 TTL 分布。 */
 import { computed } from 'vue';
 import type { LabResult } from '../../types/domain';
 
 const props = defineProps<{ results: LabResult[] }>();
 const ttlBars = computed(() => props.results.find((result) => result.mode === 'guarded')?.seededTtlMs ?? []);
 
+/** 把回源次数换算为可显示的百分比，处理零请求并将柱宽限制在 100% 内。 */
 function readPercentage(result: LabResult): number {
   return Math.min(100, result.metrics.dbReads / Math.max(1, result.metrics.requests) * 100);
 }

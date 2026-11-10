@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 请求观察窗。展示最近一次被记录的请求和响应，初始 trace 为 null。 */
 import type { RequestTrace } from '../../types/http';
 import PanelHeading from './PanelHeading.vue';
 

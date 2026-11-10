@@ -32,3 +32,9 @@
 证据保存在本机忽略目录 `.runtime/proof/frontend-typescript-refactor.json`，桌面 / 移动截图为同目录 `frontend-typescript-desktop.png` / `frontend-typescript-mobile.png`。临时回归脚本在 `.runtime/frontend-check/`。本轮未重跑 Java 单元 / 集成测试，真实 MySQL/Redis 仍未实测。
 
 交付入口：[前端分层学习说明](../learning/frontend-typescript-components.md)、[更新后的架构](../architecture.md)、[验证记录](../verification.md)。本轮临时 5179 / 8088 服务已关闭，默认启动方法保持 README 所列命令。未提交或推送代码。
+
+## 2026-11-06 前端源码注释补全
+
+已为 38 个前端文件补齐中文职责说明，涵盖 Vue 组件、页面、状态逻辑、请求封装、类型、配置、工具与样式。重点解释组件事件边界、表单草稿、订单重放、静默请求和缓存统计口径。阅读路径已补入[前端分层学习说明](../learning/frontend-typescript-components.md)。
+
+前端构建与 Vue、TypeScript 类型检查通过。差异检查确认 38 个源码文件均有职责注释，源码增量均为注释或空行。三个新增的学习说明链接已核验。

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 侧栏导航。activeTab 来自工作区，select 事件携带用户选择的标签 ID。 */
 import { navigationItems } from '../../config/navigation';
 import type { TabId } from '../../types/navigation';
 

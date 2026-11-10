@@ -1,9 +1,11 @@
+/** HTTP 传输层。统一 API 路径、JSON 处理、错误提示和请求观察记录。 */
 import type { ApiEnvelope, RequestOptions, RequestTrace } from '../types/http';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
+/** 尽量保留后端错误码、字段详情和 requestId，缺少结构化内容时使用 HTTP 状态。 */
 function failureMessage(value: unknown, status: number): string {
   if (!isRecord(value)) return `请求失败 [${status}]`;
 
@@ -19,7 +21,12 @@ function failureMessage(value: unknown, status: number): string {
   return `${message}${details ? ` · ${details}` : ''} [${code}]${requestId ? ` · ${requestId}` : ''}`;
 }
 
+/**
+ * 创建供领域接口共用的客户端。
+ * @param onTrace 观察窗回调。quiet 请求仍执行 HTTP 检查和解包，观察记录由非静默请求更新。
+ */
 export function createApiClient(onTrace: (trace: RequestTrace) => void) {
+  /** path 以斜杠开头，由客户端统一添加 /api。成功时返回响应外壳中的 data。 */
   async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
     const { method = 'GET', body, quiet = false } = options;
     const url = `/api${path}`;
@@ -35,6 +42,7 @@ export function createApiClient(onTrace: (trace: RequestTrace) => void) {
         body: body === undefined ? undefined : JSON.stringify(body),
       });
     } catch (error: unknown) {
+      // fetch 未取得响应时没有 HTTP 状态码，观察窗单独标记网络错误。
       if (!quiet) {
         onTrace({ method, url, status: '网络错误', elapsedMs: elapsedMs(), body: body ?? null, response: String(error) });
       }
@@ -53,6 +61,7 @@ export function createApiClient(onTrace: (trace: RequestTrace) => void) {
       onTrace({ method, url, status: response.status, elapsedMs: elapsedMs(), body: body ?? null, response: payload });
     }
 
+    // 先记录响应再抛错，让失败请求也能在观察窗中回看。
     if (!response.ok) throw new Error(failureMessage(payload, response.status));
     if (!isRecord(payload) || !('data' in payload) || typeof payload.requestId !== 'string') {
       throw new Error(`API 响应格式不正确 [${response.status}]`);

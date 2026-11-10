@@ -1,9 +1,11 @@
 <script setup lang="ts">
+/** 顶部指标卡。展示布局传入的分页总数与商品详情缓存统计。 */
 import type { CacheMetrics } from '../../types/domain';
 
 defineProps<{
   productTotal: number;
   orderTotal: number;
+  /** 商品详情缓存的业务计数。单次实验结果由 LabResults 展示。 */
   metrics: CacheMetrics;
 }>();
 </script>

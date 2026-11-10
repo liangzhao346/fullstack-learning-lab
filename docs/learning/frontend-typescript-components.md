@@ -60,6 +60,14 @@ App 用 KeepAlive 保留已经打开的 View：切换到订单、实验或学习
 
 下单使用相同组织方式：`OrderForm → OrdersView → useOrders.place → api.orders.create → client.request`。成功后刷新商品和订单列表，表单保留 requestKey，支持用户重放。商品行「下单」先由工作区填入商品、生成新标识并切换页面，点击提交后才发送 POST。
 
+## 怎样沿源码注释阅读
+
+每个前端源码模块的开头有中文职责说明。先看组件的 props、事件和表单草稿，再沿 View 的事件绑定进入 composable，最后对照 API 请求和 DTO。样式文件按布局、公共组件和业务页面标出分区。
+
+以订单重放为例，先读 `submit` 和 `newOrderKey`，区分沿用标识与生成新标识的时机。再读 `place`，看下单成功后如何刷新商品库存和订单记录。[订单表单](../../client/src/components/orders/OrderForm.vue)、[订单逻辑](../../client/src/composables/useOrders.ts)
+
+排查请求时，从客户端的错误处理和 `quiet` 选项入手，跟踪响应如何进入观察窗以及后台刷新如何保留原记录。[请求客户端](../../client/src/api/client.ts)
+
 ## TypeScript 实际检查什么
 
 所有业务脚本、入口和 Vite 配置使用 `.ts`；所有有脚本的 Vue 组件使用 `<script setup lang="ts">`。`strict`、`noUncheckedIndexedAccess` 和未使用变量检查约束空值、数组访问和组件间的数据传递。浏览器和 Node 的类型环境分别配置。

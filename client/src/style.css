@@ -1,3 +1,4 @@
+/* 全局基础样式。由 main.ts 加载，供布局、公共组件和各业务页面共用。 */
 :root {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
     color: #23352d;
@@ -33,6 +34,7 @@ a {
     color: inherit
 }
 
+/* 应用外壳与侧栏导航。桌面侧栏固定，主内容为它预留宽度。 */
 .shell {
     display: flex;
     min-height: 100vh
@@ -163,6 +165,7 @@ main {
     padding: 35px 42px 24px
 }
 
+/* 页眉与环境提示。 */
 header {
     display: flex;
     align-items: center;
@@ -230,6 +233,7 @@ h3 {
     color: #3a543a
 }
 
+/* 顶部业务计数与详情缓存指标。 */
 .metrics {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -264,6 +268,7 @@ h3 {
     color: #99a08c
 }
 
+/* 公共内容布局和面板标题。商品与订单页共用双列布局。 */
 .two-column {
     display: grid;
     grid-template-columns: minmax(0, 1.8fr) minmax(265px, 1fr);
@@ -303,6 +308,7 @@ h3 {
     white-space: nowrap
 }
 
+/* 搜索行、表单输入与商品列表。窄屏时表格在自己的容器内滚动。 */
 .search {
     display: flex;
     gap: 9px;
@@ -404,6 +410,7 @@ td small {
     color: #b68773
 }
 
+/* 分页、编辑表单与操作反馈。 */
 .pagination {
     padding: 16px 20px;
     display: flex;
@@ -506,6 +513,7 @@ label {
     white-space: normal
 }
 
+/* 订单历史。标识较长时允许换行。 */
 .order-card {
     margin: 0 22px;
     padding: 18px 0;
@@ -527,6 +535,7 @@ label {
     overflow-wrap: anywhere
 }
 
+/* 缓存实验。场景选择、参数控制、对照结果和预热 TTL 柱图。 */
 .scenario-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -677,6 +686,7 @@ label {
     border-radius: 3px 3px 0 0
 }
 
+/* 学习地图的步骤卡片。 */
 .learning-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -713,6 +723,7 @@ label {
     color: #6e8555
 }
 
+/* 请求观察窗与页脚。长 JSON 在观察窗内部滚动。 */
 .inspector {
     margin-top: 23px
 }
@@ -740,12 +751,14 @@ footer {
     line-height: 1.8
 }
 
+/* 宽屏增加内容区留白。 */
 @media(min-width:1600px) {
     main {
         padding-inline: 55px
     }
 }
 
+/* 中等宽度收窄侧栏，将主要业务面板改为上下排列。 */
 @media(max-width:1150px) {
     aside {
         width: 195px;
@@ -788,6 +801,7 @@ footer {
     }
 }
 
+/* 移动端将侧栏移到页面顶部，导航横向滚动，表单与结果纵向排列。 */
 @media(max-width:720px) {
     .shell {
         display: block

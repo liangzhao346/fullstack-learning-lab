@@ -1,3 +1,4 @@
+/** 缓存实验的场景配置。界面按 id 提交实验，标题、现象和保护方案用于展示。 */
 import type { CacheScenario } from '../types/domain';
 
 interface ScenarioDefinition {

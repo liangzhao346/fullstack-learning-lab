@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 公用面板标题。title 和 description 提供内容，badge 用于可选的分类或状态标记。 */
 defineProps<{
   title: string;
   description: string;

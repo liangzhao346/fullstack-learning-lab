@@ -1,3 +1,4 @@
+/** 侧栏的显示顺序与文案。每个 id 与 App.vue 中的页面映射对应。 */
 import type { NavigationItem } from '../types/navigation';
 
 export const navigationItems: NavigationItem[] = [

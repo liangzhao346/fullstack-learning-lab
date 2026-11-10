@@ -1,3 +1,4 @@
+/** 学习地图的卡片内容。数组顺序就是阅读顺序，source 标出对应的代码链路。 */
 interface LearningStep {
   title: string;
   description: string;

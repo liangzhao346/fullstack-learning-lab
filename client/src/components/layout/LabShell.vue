@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 公共布局。承载导航、环境状态、全局反馈、指标与请求观察窗，默认插槽放置当前页面。 */
 import { useLabWorkspace } from '../../composables/useLabWorkspace';
 import FeedbackMessages from '../common/FeedbackMessages.vue';
 import MetricsOverview from '../common/MetricsOverview.vue';
@@ -10,6 +11,7 @@ const workspace = useLabWorkspace();
 const { tab, title, trace, selectTab, refresh } = workspace;
 const { busy, failure, notice } = workspace.feedback;
 const { info, metrics } = workspace.system;
+// 顶部记录数取自当前分页响应的 total，商品搜索时会随筛选条件变化。
 const { page: products } = workspace.products;
 const { page: orders } = workspace.orders;
 </script>

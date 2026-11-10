@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 订单页。把商品候选、下单草稿与分页记录交给对应组件展示。 */
 import { computed } from 'vue';
 import OrderForm from '../components/orders/OrderForm.vue';
 import OrderHistory from '../components/orders/OrderHistory.vue';

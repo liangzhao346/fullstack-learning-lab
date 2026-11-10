@@ -1,6 +1,8 @@
 <script setup lang="ts">
+/** 页面页眉。展示标题和后端环境，并向布局报告手动刷新操作。 */
 import type { SystemInfo } from '../../types/domain';
 
+/** system 为空时显示连接提示，busy 期间禁用刷新。refresh 由布局处理。 */
 defineProps<{ title: string; system: SystemInfo | null; busy: boolean }>();
 defineEmits<{ refresh: [] }>();
 </script>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 学习地图。按 learningSteps 的顺序展示练习步骤与对应源码入口。 */
 import { learningSteps } from '../config/learningSteps';
 </script>
 

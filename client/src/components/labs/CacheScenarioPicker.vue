@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 缓存场景选择器。展示选中项，实验运行期间锁定选择，select 携带场景 ID。 */
 import { cacheScenarios } from '../../config/cacheScenarios';
 import type { CacheScenario } from '../../types/domain';
 

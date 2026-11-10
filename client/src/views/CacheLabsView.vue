@@ -1,10 +1,12 @@
 <script setup lang="ts">
+/** 缓存实验页。组合场景选择、参数输入和结果展示，实际执行顺序由 useCacheLabs 管理。 */
 import PanelHeading from '../components/common/PanelHeading.vue';
 import CacheScenarioPicker from '../components/labs/CacheScenarioPicker.vue';
 import LabResults from '../components/labs/LabResults.vue';
 import { useLabWorkspace } from '../composables/useLabWorkspace';
 
 const workspace = useLabWorkspace();
+// 拿到系统信息后才能发起实验，running 单独控制实验期间的表单。
 const { info } = workspace.system;
 const { scenario, requestCount, running, results, definition, selectScenario, run } = workspace.labs;
 </script>

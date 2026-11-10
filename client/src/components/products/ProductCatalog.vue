@@ -1,17 +1,25 @@
 <script setup lang="ts">
+/** 商品目录。负责搜索输入、分页表格和行级操作，页面接收事件后执行相应业务。 */
 import type { Page, Product } from '../../types/domain';
 import { formatMoney } from '../../utils/format';
 import PaginationControls from '../common/PaginationControls.vue';
 import PanelHeading from '../common/PanelHeading.vue';
 
 defineProps<{ products: Page<Product>; busy: boolean }>();
+// query 和页面双向同步，提交搜索时再发出 search。
 const query = defineModel<string>('query', { required: true });
 defineEmits<{
+  /** 提交当前搜索词，页面会从第一页加载。 */
   search: [];
+  /** 携带目标页的接口页码，从 0 开始。 */
   pageChange: [page: number];
+  /** 读取详情，触发后端的缓存链路。 */
   detail: [product: Product];
+  /** 用当前行数据初始化编辑表单。 */
   edit: [product: Product];
+  /** 把当前商品带入订单页。 */
   order: [product: Product];
+  /** 请求删除当前商品，确认与调用接口由业务层处理。 */
   remove: [product: Product];
 }>();
 </script>

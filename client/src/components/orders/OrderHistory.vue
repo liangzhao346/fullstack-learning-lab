@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** 订单记录。显示后端返回的金额和幂等标识，通过 pageChange 请求加载目标页。 */
 import type { Page, PurchaseOrder } from '../../types/domain';
 import { formatMoney } from '../../utils/format';
 import PaginationControls from '../common/PaginationControls.vue';

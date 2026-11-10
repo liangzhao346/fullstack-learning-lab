@@ -1,18 +1,22 @@
 <script setup lang="ts">
+/** 订单表单。根据商品候选和初值管理草稿，submit 事件携带 OrderInput。 */
 import { ref, watch } from 'vue';
 import type { OrderInput, Product } from '../../types/domain';
 import PanelHeading from '../common/PanelHeading.vue';
 
 const props = defineProps<{ initialValue: OrderInput; products: Product[]; busy: boolean }>();
 const emit = defineEmits<{ submit: [input: OrderInput] }>();
+// 本地草稿独立于父组件。initialValue 更新时重新带入商品、数量和提交标识。
 const draft = ref<OrderInput>({ ...props.initialValue });
 
 watch(() => props.initialValue, (value) => { draft.value = { ...value }; });
 
 function submit() {
+  // 沿用草稿中的 requestKey，支持用户用同样的内容重放订单请求。
   emit('submit', { ...draft.value, productId: Number(draft.value.productId), quantity: Number(draft.value.quantity) });
 }
 
+/** 生成一次新下单使用的幂等标识，保留已填的商品和数量。 */
 function newOrderKey() {
   draft.value.requestKey = crypto.randomUUID();
 }
